@@ -4,24 +4,32 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public Rigidbody2D playerRb;
     public float moveSpeed;
     public float jumpForce;
 
     private Vector2 movement;
 
-    // Update is called once per frame
-    void Update()
+    [SerializeField]
+    private Rigidbody2D player;
+
+    //called once upon game start
+	private void Awake()
+	{
+		player = GetComponent<Rigidbody2D>();   //initalises players rigid body on game start
+
+	}
+
+	// FixedUpdate is called once per frame at a fixed rate
+	void FixedUpdate()
     {
-        movement.x = Input.GetAxisRaw("Horizontal");
-        if (Input.GetButtonDown("Jump"))
+       player.velocity = new Vector2 (Input.GetAxis("Horizontal") * moveSpeed, player.velocity.y);  //player left/right movement logic
+
+        /* PLAYER JUMP LOGIC */
+        if(Input.GetKeyDown(KeyCode.Space))
         {
-            playerRb.AddForce(new Vector2(playerRb.velocity.x, jumpForce));
+            player.velocity = new Vector2(player.velocity.x, moveSpeed);    //player maintains speed when jumping
         }
     }
 
-	private void FixedUpdate()
-	{
-		playerRb.MovePosition(playerRb.position + movement * moveSpeed * Time.deltaTime);
-	}
+
 }
